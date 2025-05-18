@@ -1,29 +1,93 @@
-# ZeroBot
+# ZeroBot: Local LLM Chatbot (1-Hour RAG Build)
 
-A fully local, zero-cost LLM chatbot built with Docker. This is a hobby project I use to explore LLMs, RAG, and full-stack AI deployment. It’s also part of my public portfolio.
+A 100% offline RAG-based chatbot built in 1 hour using Ollama, Streamlit, LangChain, and ChromaDB. No cloud. No API keys. No BS.
 
-## 🔥 Highlights
+## 🔄 Ollama Model Auto-Pull
 
-- 100% local: No APIs, no internet calls after setup
-- Runs via Docker Compose
-- Crawls websites for context (RAG)
-- Supports chatting with custom data
-- Uses Ollama + Mistral for LLM
-- Vector store: ChromaDB
-- Web UI: Streamlit
+ZeroBot uses a custom Ollama Docker image that auto-pulls the model (default: `gemma:2b`) at container start.
 
-## 📦 Tech Stack
+### How it works
 
-- LLM: Ollama (`mistral`, `llama2`, etc.)
+- Entrypoint pulls model before Ollama server runs
+- `OLLAMA_MODEL` env var defines the model
+- Docker Compose builds Ollama from the custom image
+
+### Run
+
+```bash
+docker compose build ollama
+docker compose up -d
+```
+
+````
+
+---
+
+## 🚀 Features (Pareto-Optimized)
+
+- 🧠 Local LLM (Mistral, LLaMA2) via Ollama
+- 🕸 Web ingestion via Playwright + Unstructured
+- 🧩 RAG pipeline using LangChain + ChromaDB
+- 💻 Streamlit-based UI
+- 🧱 Fully dockerized, one-liner setup
+
+## 🏗️ System Architecture
+
+```
+User ⇄ Streamlit ⇄ Ollama ⇄ ChromaDB
+                     ⇑
+          Playwright + Unstructured
+```
+
+## ⚙️ Stack
+
+- LLM: Ollama (`mistral`, `llama2`, `gemma`)
 - RAG: LangChain + ChromaDB
-- Web crawler: `unstructured` + `playwright`
-- Frontend: Streamlit (chat interface)
-- Containerized with Docker Compose
+- Crawler: Playwright + Unstructured
+- UI: Streamlit
+- Infra: Docker Compose
 
-## 🛠️ Setup
+## ⚡ Quickstart
 
 ```bash
 git clone https://github.com/yourusername/zerobot.git
 cd zerobot
 docker compose up --build
 ```
+
+- First run pulls LLM model
+- Visit: [http://localhost:8501](http://localhost:8501)
+
+## 🌐 Crawling Docs
+
+Edit `src/crawler/crawler.py` → update `URLS` list to your target sites. On startup, it auto-ingests into ChromaDB.
+
+## 💬 Sample Usage
+
+```txt
+User: What is a Python list comprehension?
+ZeroBot: [Uses local docs + LLM to answer]
+```
+
+## 📁 Folder Structure
+
+```
+zerobot/
+├── docker-compose.yml
+├── readme.md
+├── src/
+│   ├── app/
+│   └── crawler/
+└── data/ (persistent vector store)
+```
+
+## 👨‍💻 Dev Notes
+
+- Change `OLLAMA_MODEL` to try other LLMs
+- Extend Streamlit or crawler logic freely
+- Pareto tip: tweak crawler before tuning model
+
+## 📝 License
+
+MIT. Open to hacks and PRs.
+````
