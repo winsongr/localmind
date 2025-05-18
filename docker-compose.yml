@@ -1,0 +1,55 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    command: >
+      sh -c "ollama serve & sleep 2 && ollama pull mistral && wait"
+
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/.chroma/index
+    restart: unless-stopped
+
+  crawler:
+    build:
+      context: ./src/crawler
+      dockerfile: Dockerfile
+    container_name: crawler
+    environment:
+      - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - chromadb
+    restart: unless-stopped
+
+  app:
+    build:
+      context: ./src/app
+      dockerfile: Dockerfile
+    container_name: zerobot-app
+    ports:
+      - "8501:8501"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - CHROMA_HOST=http://chromadb:8000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - ollama
+      - chromadb
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+  chroma_data:

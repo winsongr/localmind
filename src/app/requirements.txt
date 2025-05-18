@@ -1,0 +1,8 @@
+streamlit
+langchain
+chromadb
+requests
+langchain_ollama
+langchain_chroma
+playwright
+unstructured
