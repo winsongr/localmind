@@ -19,8 +19,6 @@ docker compose build ollama
 docker compose up -d
 ```
 
-````
-
 ---
 
 ## 🚀 Features (Pareto-Optimized)
@@ -90,4 +88,3 @@ zerobot/
 ## 📝 License
 
 MIT. Open to hacks and PRs.
-````
